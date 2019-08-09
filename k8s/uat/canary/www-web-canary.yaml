@@ -2,18 +2,19 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: whoami-svc-deployment
+  name: www-web-deployment-canary
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: whoami-svc
+        app: www-svc
         env: uat
+        track: canary
     spec:
       containers:
-        - name: whoami-svc
-          image: boboweike/whoami-svc
+        - name: www-svc
+          image: boboweike/www-svc:blue
           ports:
             - name: http-port
               containerPort: 80
@@ -27,16 +28,3 @@ spec:
         - name: logback-config-volume
           configMap:
             name: logback-config
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: whoami-service
-spec:
-  selector:
-    app: whoami-svc
-    env: uat
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 80
